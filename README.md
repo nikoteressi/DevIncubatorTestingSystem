@@ -6,7 +6,7 @@ For authorizing and authentication it uses Spring Security.
 
 Getting Started
 =====================
-##### 1. git clone https://github.com/levjack1995/dits_for_dev_inc.git
+##### 1. git clone https://github.com/DevIncubator/DevIncubatorTestingSystem
 ##### 2. start your application from your Idea
         ## Before start install Java https://www.java.com/
         ## Allow all installations suggested by IDE

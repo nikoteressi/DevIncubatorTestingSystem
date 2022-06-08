@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 
+@SuppressWarnings("unchecked")
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -19,82 +20,97 @@ public class TestPageController {
     private final QuestionService questionService;
     private final AnswerService answerService;
     private final StatisticService statisticService;
+    private final TopicService topicService;
 
     @GetMapping("/goTest")
-    public String goTest(@RequestParam int testId, @RequestParam(value = "theme") String topicName, ModelMap model, HttpSession session){
-
+    public String goTest(@RequestParam int testId, @RequestParam(value = "theme") String topicName,
+                         ModelMap model, HttpSession session) {
         Test test = testService.getTestByTestId(testId);
         List<Question> questionList = questionService.getQuestionsByTest(test);
-        int quantityOfQuestions = questionList.size();
         int questionNumber = 0;
         int quantityOfRightAnswers = 0;
 
-        List<Answer> answers = answerService.getAnswersFromQuestionList(questionList, questionNumber);
-        String questionDescription = questionService.getDescriptionFromQuestionList(questionList, questionNumber);
+        List<Answer> answers = answerService.getAnswersFromQuestion(questionList.get(questionNumber));
+        String questionDescription = questionList.get(questionNumber).getDescription();
 
         session.setAttribute("testName", test.getName());
         session.setAttribute("topicName", topicName);
-        session.setAttribute("questionSize", quantityOfQuestions);
+        session.setAttribute("topicId", topicService.getTopicByName(topicName).getTopicId());
+        session.setAttribute("questionSize", questionList.size());
         session.setAttribute("quantityOfRightAnswers", quantityOfRightAnswers);
         session.setAttribute("statistics", new ArrayList<Statistic>());
-        session.setAttribute("questions",questionList);
-        session.setAttribute("questionNumber" , ++questionNumber);
+        session.setAttribute("questions", questionList);
+        session.setAttribute("questionNumber", ++questionNumber);
+        session.setAttribute("currentQuestion", questionList.get(questionNumber));
 
         model.addAttribute("question", questionDescription);
         model.addAttribute("answers", answers);
-        model.addAttribute("title","Testing");
+        model.addAttribute("title", "Testing");
         return "user/testPage";
     }
 
     @GetMapping("/nextTestPage")
     public String nextTestPage(@RequestParam(value = "answeredQuestion", required = false) List<Integer> answeredQuestion,
-                               ModelMap model,
-                               HttpSession session){
-
-        List<Question> questionList = (List<Question>) session.getAttribute("questions");
+                               ModelMap model, HttpSession session) {
+        Question currentQuestion = (Question) session.getAttribute("currentQuestion");
         int questionNumber = (int) session.getAttribute("questionNumber");
         User user = (User) session.getAttribute("user");
-        boolean isCorrect = answerService.isRightAnswer(answeredQuestion,questionList,questionNumber);
+        boolean isCorrect = answerService.isRightAnswer(answeredQuestion, currentQuestion);
 
-        List<Answer> answers = answerService.getAnswersFromQuestionList(questionList, questionNumber);
-        String questionDescription = questionService.getDescriptionFromQuestionList(questionList, questionNumber);
+        List<Answer> answers = currentQuestion.getAnswers();
+
+        String questionDescription = currentQuestion.getDescription();
 
         List<Statistic> statisticList = (List<Statistic>) session.getAttribute("statistics");
         statisticList.add(Statistic.builder()
-                .question(questionList.get(questionNumber-1))
+                .question(currentQuestion)
                 .user(user)
                 .correct(isCorrect).build());
 
         session.setAttribute("statistics", statisticList);
-        session.setAttribute("questionNumber" , ++questionNumber);
-        model.addAttribute("question",questionDescription);
+        session.setAttribute("questionNumber", ++questionNumber);
+        model.addAttribute("question", questionDescription);
         model.addAttribute("answers", answers);
-        model.addAttribute("title","Testing");
+        model.addAttribute("title", "Testing");
         return "user/testPage";
     }
 
-    @GetMapping("/resultPage")
+    @GetMapping("/test-result")
     public String testStatistic(@RequestParam(value = "answeredQuestion", required = false) List<Integer> answeredQuestion,
-                                ModelMap model,
-                                HttpSession session){
-
-
+                                HttpSession session) {
         List<Question> questions = (List<Question>) session.getAttribute("questions");
         int questionNumber = questions.size();
-        boolean isCorrect = answerService.isRightAnswer(answeredQuestion,questions,questionNumber);
+
+        int quantityOfRightAnswers = (int) session.getAttribute("quantityOfRightAnswers");
+        int questionQuantity = (int) session.getAttribute("questionSize");
+        boolean isCorrect = answerService.isRightAnswer(answeredQuestion, questions.get(questionNumber - 1));
         User user = (User) session.getAttribute("user");
         List<Statistic> statisticList = (List<Statistic>) session.getAttribute("statistics");
-
         checkIfResultPage(questions, questionNumber, isCorrect, user, statisticList);
         statisticService.saveStatisticsToDB(statisticList);
-        model.addAttribute("title","Result");
-        return "redirect:/user/chooseTest";
+
+        if (isCorrect) ++quantityOfRightAnswers;
+        double rightAnswerPercent = (double) quantityOfRightAnswers / questionQuantity * 100;
+
+        session.setAttribute("quantityOfRightAnswers", quantityOfRightAnswers);
+        session.setAttribute("rightAnswerPercent", rightAnswerPercent);
+        return "redirect:/user/resultPage";
+    }
+
+    @GetMapping("/resultPage")
+    public String testStatistic(ModelMap model, HttpSession session) {
+        int quantityOfRightAnswers = (int) session.getAttribute("quantityOfRightAnswers");
+        int rightAnswerPercent = (int) Math.round((Double) session.getAttribute("rightAnswerPercent"));
+        model.addAttribute("title", "Result");
+        model.addAttribute("rightAnswersPercent", rightAnswerPercent);
+        model.addAttribute("quantityOfRightAnswers", quantityOfRightAnswers);
+        return "/user/result-page";
     }
 
     private void checkIfResultPage(List<Question> questions, int questionNumber, boolean isCorrect, User user, List<Statistic> statisticList) {
-        if (!isResultPage(questionNumber, statisticList)){
+        if (!isResultPage(questionNumber, statisticList)) {
             statisticList.add(Statistic.builder()
-                    .question(questions.get(questionNumber -1))
+                    .question(questions.get(questionNumber - 1))
                     .user(user)
                     .correct(isCorrect).build());
         }

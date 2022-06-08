@@ -26,9 +26,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     public void update(Answer a, int id) {
         Optional<Answer> answer = repo.findById(id);
-        if(answer.isEmpty())
-            return;
-        else
+        if (answer.isPresent())
             repo.save(a);
     }
 
@@ -48,40 +46,40 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Transactional
-    public List<Answer> getAnswersByQuestion(Question question){
+    public List<Answer> getAnswersByQuestion(Question question) {
         return repo.getAnswersByQuestion(question);
     }
 
     @Override
-    public List<Answer> getAnswersFromQuestionList(List<Question> questionList, int index) {
-        return getAnswersByQuestion(questionList.get(index));
+    public List<Answer> getAnswersFromQuestion (Question question) {
+        return getAnswersByQuestion(question);
     }
 
     @Override
-    public boolean isRightAnswer(List<Integer> answeredQuestion, List<Question> questionList, int questionNumber) {
-        List<Answer> prevAnswer = getPreviousAnswers(questionList, questionNumber);
-        List<Integer> rightIndexesList = getListOfIndexesOfRightAnswers(prevAnswer);
-        if(answeredQuestion == null && rightIndexesList.isEmpty()) {
+    public boolean isRightAnswer(List<Integer> userQuestionAnswers, Question question) {
+        List<Answer> questionAnswers = getQuestionAnswers(question);
+        List<Integer> rightIndexesList = getListOfIndexesOfRightAnswers(questionAnswers);
+        if (rightIndexesList.isEmpty() && userQuestionAnswers == null) {
             return true;
-        } else if(answeredQuestion == null && !rightIndexesList.isEmpty()) {
-            return false;
-        } else {
-            return answeredQuestion.equals(rightIndexesList);
         }
+        if (!rightIndexesList.isEmpty() && userQuestionAnswers == null) {
+            return false;
+        }
+        return userQuestionAnswers.equals(rightIndexesList);
     }
 
-    private List<Integer> getListOfIndexesOfRightAnswers(List<Answer> prevAnswer) {
+    private List<Integer> getListOfIndexesOfRightAnswers(List<Answer> questionAnswers) {
         List<Integer> rightAnswers = new ArrayList<>();
-        for (int i = 0; i < prevAnswer.size(); i++) {
-            if (prevAnswer.get(i).isCorrect()){
+        for (int i = 0; i < questionAnswers.size(); i++) {
+            if (questionAnswers.get(i).isCorrect()) {
                 rightAnswers.add(i);
             }
         }
         return rightAnswers;
     }
 
-    private List<Answer> getPreviousAnswers(List<Question> questionList, int questionNumber) {
-        return getAnswersByQuestion(questionList.get(questionNumber - 1));
+    private List<Answer> getQuestionAnswers(Question question) {
+        return getAnswersByQuestion(question);
     }
 
 }

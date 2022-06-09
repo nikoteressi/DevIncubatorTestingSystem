@@ -2,7 +2,9 @@ package com.example.dits.controllers;
 
 import com.example.dits.dto.*;
 import com.example.dits.entity.Topic;
+import com.example.dits.entity.User;
 import com.example.dits.service.TopicService;
+import com.example.dits.service.UserService;
 import com.example.dits.service.impl.StatisticServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,6 +23,7 @@ public class AdminStatisticController {
     private final ModelMapper modelMapper;
     private final StatisticServiceImpl statisticService;
     private final TopicService topicService;
+    private final UserService userService;
 
     @GetMapping("/adminStatistic")
     public String testStatistic(ModelMap model){
@@ -31,17 +34,19 @@ public class AdminStatisticController {
         return "admin/test-statistic";
     }
 
-    @ResponseBody
-    @GetMapping("/getTestsStatistic")
-    public List<TestStatistic> getTestsStatistics(@RequestParam int id) {
-        return statisticService.getListOfTestsWithStatisticsByTopic(id);
-    }
-
-    @GetMapping("/getUserStatistic")
+    @GetMapping("/user-statistic")
     public String userStatistic(ModelMap model){
+        List<User> users = userService.getAllUsers();
+        model.addAttribute("usersList", users);
+        model.addAttribute("title", "User statistic");
         return "admin/user-statistic";
     }
 
+    @ResponseBody
+    @GetMapping("/get-users-statistic")
+    public List<TestStatisticByUser> getUsersStatistics(@RequestParam int userId) {
+        return statisticService.getListOfTestsWithStatisticsByUserId(userId);
+    }
     @ResponseBody
     @GetMapping("/adminStatistic/removeStatistic/byId")
     public String removeStatisticByUserId(@RequestParam int id){

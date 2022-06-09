@@ -12,5 +12,6 @@ public class UserInfoDTO {
     private String lastName;
     private String login;
     private RoleDTO role;
+    private String password;
 
 }

@@ -61,7 +61,7 @@ themeSelect.addEventListener('change', async ({target}) => {
     dataContainer.classList.remove('active');
     try {
         const userId = target.value;
-        const url = new URL(baseUrl + "/admin/getUserTestsStatistic");
+        const url = new URL(baseUrl + "/admin/get-users-statistic");
         const params = {id: userId};
         url.search = new URLSearchParams(params).toString();
         const response = await fetch(url);

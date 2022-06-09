@@ -29,7 +29,7 @@ public class AdminUserController {
     public String getUsers(ModelMap model, HttpSession session) {
         session.setAttribute("user", userService.getUserByLogin(getUsername()));
         model.addAttribute("title", "User editor");
-        return "admin/user-editor";
+        return "admin/users-editor";
     }
 
     private static String getUsername() {

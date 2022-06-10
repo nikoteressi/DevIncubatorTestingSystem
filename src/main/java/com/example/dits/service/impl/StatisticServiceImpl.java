@@ -4,6 +4,7 @@ import com.example.dits.DAO.StatisticRepository;
 import com.example.dits.dto.*;
 import com.example.dits.entity.*;
 import com.example.dits.service.StatisticService;
+import com.example.dits.service.TestService;
 import com.example.dits.service.TopicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class StatisticServiceImpl implements StatisticService {
 
     private final StatisticRepository repository;
     private final TopicService topicService;
+    private final TestService testService;
 
     @Transactional
     @Override
@@ -163,7 +165,7 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     private List<TestStatistic> getTestStatistics(Topic topic) {
-        List<Test> testLists = topic.getTestList();
+        List<Test> testLists = testService.getTestsByTopic(topic);
         List<TestStatistic> testStatistics = new ArrayList<>();
 
         setTestLists(testLists, testStatistics);

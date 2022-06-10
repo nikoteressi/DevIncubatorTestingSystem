@@ -33,6 +33,12 @@ public class AdminStatisticController {
         return "admin/test-statistic";
     }
 
+    @ResponseBody
+    @GetMapping("/getTestsStatistic")
+    public List<TestStatistic> getTestsStatistics(@RequestParam int id) {
+        return statisticService.getListOfTestsWithStatisticsByTopic(id);
+    }
+
     @GetMapping("/user-statistic")
     public String userStatistic(ModelMap model){
         List<User> users = userService.getAllUsers();
@@ -46,6 +52,7 @@ public class AdminStatisticController {
     public List<TestStatisticByUser> getUsersStatistics(@RequestParam int userId) {
         return statisticService.getListOfTestsWithStatisticsByUserId(userId);
     }
+
     @ResponseBody
     @GetMapping("/adminStatistic/removeStatistic/byId")
     public String removeStatisticByUserId(@RequestParam int id){

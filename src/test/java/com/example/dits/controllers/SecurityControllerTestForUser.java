@@ -22,7 +22,7 @@ public class SecurityControllerTestForUser {
 
     @Test
     public void testAuthenticatedOnUser() throws Exception {
-        mockMvc.perform(get("/user"))
+        mockMvc.perform(get("/user/chooseTest"))
                 .andExpect(status().isOk());
     }
 }

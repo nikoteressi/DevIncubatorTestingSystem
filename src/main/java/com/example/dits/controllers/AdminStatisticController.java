@@ -27,7 +27,6 @@ public class AdminStatisticController {
 
     @GetMapping("/adminStatistic")
     public String testStatistic(ModelMap model){
-
         List<TopicDTO> topicDTOList = topicService.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
         model.addAttribute("topicList",topicDTOList);
         model.addAttribute("title","Statistic");

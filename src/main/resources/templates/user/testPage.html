@@ -11,7 +11,7 @@
         </div>
         <div class="row">
             <form id="form-test-item" action="#"
-                  th:action="${session.questionSize == session.questionNumber} ? 'resultPage' : 'nextTestPage'"
+                  th:action="${session.questionSize == session.questionNumber} ? 'test-result' : 'nextTestPage'"
                   th:method="get">
                 <pre class="question" th:text="${question}">
                 </pre>

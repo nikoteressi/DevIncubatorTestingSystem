@@ -1,5 +1,6 @@
 package com.example.dits.service;
 
+import com.example.dits.dto.TestStatisticByUser;
 import com.example.dits.entity.*;
 
 import java.util.List;
@@ -12,7 +13,10 @@ public interface StatisticService {
     void save(Statistic st);
     List<Statistic> findAll();
     void saveMapOfStat(Map<String, Statistic> map, String endTest);
-    List<Statistic> getStatisticsByUser(User user);
+    List<TestStatisticByUser> getListOfTestsWithStatisticsByUser(User user);
+    List<TestStatisticByUser> getListOfTestsWithStatisticsByUserId(int id);
+    List<Statistic> getUserStatistics(User user);
+    List<Statistic> getUserStatistics(int id);
     List<Statistic> getStatisticByQuestion(Question question);
     void saveStatisticsToDB(List<Statistic> statistics);
     void removeStatisticByUserId(int userid);

@@ -12,8 +12,7 @@ public interface AnswerService {
     void delete(Answer a);
     void save(Answer a);
     List<Answer> findAll();
-    List<Answer> getAnswersByQuestion(Question question);
-    List<Answer> getAnswersFromQuestionList(List<Question> questionList, int index);
-    boolean isRightAnswer(List<Integer> answeredQuestion, List<Question> questionList, int questionNumber);
+    List<Answer> getAnswersFromQuestion(Question question);
+    boolean isRightAnswer(List<Integer> answeredQuestion, Question question);
 
 }

@@ -11,7 +11,10 @@ import java.util.List;
 public interface StatisticRepository extends JpaRepository<Statistic,Integer>, CrudRepository<Statistic,Integer> {
     List<Statistic> getStatisticsByUser(User user);
     List<Statistic> getStatisticByQuestion(Question question);
+    List<Statistic> findAll();
     void removeStatisticByUser_UserId(int userid);
     @Override
     void deleteAll();
+
+    List<Statistic> findAllByUser_UserId(int UserId);
 }

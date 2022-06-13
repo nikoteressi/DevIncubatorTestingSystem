@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,16 +20,62 @@ public class StatisticServiceImpl implements StatisticService {
     private final TopicService topicService;
 
     @Transactional
-    public void saveMapOfStat(Map<String, Statistic> map, String endTest){
-        for (Statistic st : map.values()){
+    @Override
+    public void create(Statistic statistic) {
+        repository.save(statistic);
+    }
+
+    @Transactional
+    @Override
+    public void update(Statistic statistic, int id) {
+        Optional<Statistic> st = repository.findById(id);
+        if (st.isPresent()) repository.save(statistic);
+    }
+
+    @Transactional
+    @Override
+    public void delete(Statistic statistic) {
+        repository.delete(statistic);
+    }
+
+    @Transactional
+    @Override
+    public void removeStatisticByUserId(int userId) {
+        repository.removeStatisticByUser_UserId(userId);
+    }
+
+    @Transactional
+    @Override
+    public void save(Statistic statistic) {
+        repository.save(statistic);
+    }
+
+    @Override
+    public void saveStatisticsToDB(List<Statistic> statistics) {
+        for (Statistic statistic : statistics) {
+            statistic.setDate(new Date());
+            save(statistic);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void saveMapOfStat(Map<String, Statistic> map, String endTest) {
+        for (Statistic st : map.values()) {
             st.setDate(new Date());
         }
     }
 
     @Transactional
     @Override
-    public List<Statistic> getStatisticsByUser(User user){
-        return repository.getStatisticsByUser(user);
+    public List<Statistic> findAll() {
+        return repository.findAll();
+    }
+
+    @Transactional
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
     }
 
     @Transactional
@@ -37,60 +84,82 @@ public class StatisticServiceImpl implements StatisticService {
         return repository.getStatisticByQuestion(question);
     }
 
-    @Override
-    public void saveStatisticsToDB(List<Statistic> statistics) {
-        Date date = new Date();
-        for (Statistic statistic : statistics){
-            statistic.setDate(date);
-            save(statistic);
-        }
-    }
-
-    @Transactional
-    public void create(Statistic statistic) {
-        repository.save(statistic);
-    }
-
-    @Transactional
-    public void update(Statistic statistic, int id) {
-        Optional<Statistic> st = repository.findById(id);
-        if(st.isEmpty())
-            return;
-        else
-            repository.save(statistic);
-    }
-
-    @Transactional
-    public void delete(Statistic statistic) {
-        repository.delete(statistic);
-    }
-
-    @Transactional
-    public void save(Statistic statistic) {
-        repository.save(statistic);
-    }
-
-    @Transactional
-    public List<Statistic> findAll() {
-        return repository.findAll();
-    }
-    
     @Transactional
     @Override
-    public void removeStatisticByUserId(int userId){
-        repository.removeStatisticByUser_UserId(userId);
+    public List<TestStatisticByUser> getListOfTestsWithStatisticsByUser(User user) {
+        List<Statistic> statisticsByUser = getUserStatistics(user);
+        List<List<Statistic>> listStatisticsByTestName = getListStatisticsByTestName(statisticsByUser, getNamesOfTopicAndTest(statisticsByUser));
+        return getTestStatisticsByUser(listStatisticsByTestName);
     }
 
     @Transactional
     @Override
-    public void deleteAll(){
-        repository.deleteAll();
+    public List<TestStatisticByUser> getListOfTestsWithStatisticsByUserId(int id) {
+        List<Statistic> statisticsByUser = getUserStatistics(id);
+        List<List<Statistic>> listStatisticsByTestName = getListStatisticsByTestName(statisticsByUser, getNamesOfTopicAndTest(statisticsByUser));
+        return getTestStatisticsByUser(listStatisticsByTestName);
     }
 
     @Transactional
-    public List<TestStatistic> getListOfTestsWithStatisticsByTopic(int  topicId){
+    public List<TestStatistic> getListOfTestsWithStatisticsByTopic(int topicId) {
         Topic topic = topicService.getTopicByTopicId(topicId);
         return getTestStatistics(topic);
+    }
+
+    @Transactional
+    @Override
+    public List<Statistic> getUserStatistics(User user) {
+        return repository.getStatisticsByUser(user);
+    }
+
+    @Transactional
+    @Override
+    public List<Statistic> getUserStatistics(int userId) {
+        return repository.findAllByUser_UserId(userId);
+    }
+
+    private List<List<Statistic>> getListStatisticsByTestName(List<Statistic> statisticsByUser, List<String> namesOfTopicAndTest) {
+        return fillListWithListsStatisticsByTestName(statisticsByUser, namesOfTopicAndTest);
+    }
+
+    private List<List<Statistic>> fillListWithListsStatisticsByTestName(List<Statistic> statisticsByUser, List<String> namesOfTopicAndTest) {
+        List<List<Statistic>> listStatisticsByTestName = new ArrayList<>();
+        for (String s : namesOfTopicAndTest) {
+            listStatisticsByTestName.add(statisticsByUser.stream()
+                    .filter(f -> s.contains(f.getQuestion().getTest().getName()))
+                    .collect(Collectors.toList()));
+        }
+        return listStatisticsByTestName;
+    }
+
+
+    private List<TestStatisticByUser> getTestStatisticsByUser(List<List<Statistic>> listStatisticsByTestName) {
+        List<TestStatisticByUser> testStatisticByUsers = new ArrayList<>();
+
+        for (List<Statistic> s : listStatisticsByTestName) {
+            testStatisticByUsers.add(new TestStatisticByUser(getFullNameOfTopicAndTest(s), s.size(), calculateAvg(s.size(), getAmountOfRightAnswer(s))));
+        }
+        return testStatisticByUsers;
+    }
+
+    private String getFullNameOfTopicAndTest(List<Statistic> s) {
+        return s.stream().map(f -> f.getQuestion().getTest().getTopic().getName() + " / " + f.getQuestion().getTest().getName()).findFirst().orElse(null);
+    }
+
+    private List<String> getNamesOfTopicAndTest(List<Statistic> statisticsByUser) {
+        List<Test> testsPassedByUser = getTestsPassedByUser(statisticsByUser);
+        return testsPassedByUser
+                .stream()
+                .map(f -> f.getTopic().getName() + " / " + f.getName())
+                .collect(Collectors.toList());
+    }
+
+    private List<Test> getTestsPassedByUser(List<Statistic> statisticsByUser) {
+        return statisticsByUser
+                .stream()
+                .map(f -> f.getQuestion().getTest())
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     private List<TestStatistic> getTestStatistics(Topic topic) {
@@ -107,8 +176,8 @@ public class StatisticServiceImpl implements StatisticService {
 
             List<Question> questionList = test.getQuestions();
             List<QuestionStatistic> questionStatistics = new ArrayList<>();
-            QuestionStatisticAttempts statisticAttempts = new QuestionStatisticAttempts(0,0,0);
-            setQuestionStatistics(questionList, questionStatistics,statisticAttempts);
+            QuestionStatisticAttempts statisticAttempts = new QuestionStatisticAttempts(0, 0, 0);
+            setQuestionStatistics(questionList, questionStatistics, statisticAttempts);
             Collections.sort(questionStatistics);
 
             int testAverage = calculateTestAverage(statisticAttempts.getTestSumAvg(), questionStatistics.size());
@@ -118,33 +187,25 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     private void setQuestionStatistics(List<Question> questionList, List<QuestionStatistic> questionStatistics,
-                                   QuestionStatisticAttempts statisticAttempts) {
+                                       QuestionStatisticAttempts statisticAttempts) {
         for (Question question : questionList) {
-
-            List<Statistic> statisticList = getStatisticByQuestion(question);
-            statisticAttempts.setNumberOfAttempts(statisticList.size());
-            int rightAnswers = numberOfRightAnswers(statisticList);
-            if (statisticAttempts.getNumberOfAttempts() != 0)
-                statisticAttempts.setQuestionAvg(calculateAvg(statisticAttempts.getNumberOfAttempts(), rightAnswers));
-
-            statisticAttempts.setTestSumAvg(statisticAttempts.getTestSumAvg()+statisticAttempts.getQuestionAvg());
+            setQuestionStatisticAttempts(statisticAttempts, question);
             questionStatistics.add(new QuestionStatistic(question.getDescription(),
                     statisticAttempts.getNumberOfAttempts(), statisticAttempts.getQuestionAvg()));
         }
     }
 
-    private int numberOfRightAnswers(List<Statistic> statisticList){
-        int rightAnswer = 0;
-        rightAnswer = getRightAnswer(statisticList, rightAnswer);
-        return rightAnswer;
+    private void setQuestionStatisticAttempts(QuestionStatisticAttempts statisticAttempts, Question question) {
+        List<Statistic> statisticList = getStatisticByQuestion(question);
+        statisticAttempts.setNumberOfAttempts(statisticList.size());
+        if (statisticAttempts.getNumberOfAttempts() > 0)
+            statisticAttempts.setQuestionAvg(calculateAvg(statisticAttempts.getNumberOfAttempts(), getAmountOfRightAnswer(statisticList)));
+
+        statisticAttempts.setTestSumAvg(statisticAttempts.getTestSumAvg() + statisticAttempts.getQuestionAvg());
     }
 
-    private int getRightAnswer(List<Statistic> statisticList, int rightAnswer) {
-        for (Statistic statistic : statisticList) {
-            if (statistic.isCorrect())
-                rightAnswer++;
-        }
-        return rightAnswer;
+    private int getAmountOfRightAnswer(List<Statistic> statisticList) {
+        return (int) statisticList.stream().filter(Statistic::isCorrect).count();
     }
 
     private int calculateTestAverage(int testSumAvg, int questionStatisticsSize) {

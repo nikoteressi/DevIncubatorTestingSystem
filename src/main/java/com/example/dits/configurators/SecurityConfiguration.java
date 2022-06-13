@@ -20,11 +20,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CustomSuccessHandler customSuccessHandler;
 
-    private final DataSource dataSource;
     @Bean
     PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    private final DataSource dataSource;
 
     @Autowired
     public SecurityConfiguration(CustomSuccessHandler customSuccessHandler, DataSource dataSource) {

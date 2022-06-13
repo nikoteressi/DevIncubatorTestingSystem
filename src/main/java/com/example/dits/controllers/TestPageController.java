@@ -101,7 +101,7 @@ public class TestPageController {
     }
 
     @GetMapping("/resultPage")
-    public String testStatistic(ModelMap model, HttpSession session) {
+    public String testStatistics(ModelMap model, HttpSession session) {
         int quantityOfRightAnswers = (int) session.getAttribute("quantityOfRightAnswers");
         int rightAnswerPercent = (int) Math.round((Double) session.getAttribute("rightAnswerPercent"));
         model.addAttribute("title", "Result");

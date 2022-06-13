@@ -2,6 +2,7 @@ package com.example.dits.configurators;
 
 import com.example.dits.handlers.CustomSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,7 +20,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CustomSuccessHandler customSuccessHandler;
 
-    private final PasswordEncoder passwordEncoder;
+    @Bean
+    PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     private final DataSource dataSource;
 
@@ -27,13 +31,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public SecurityConfiguration(CustomSuccessHandler customSuccessHandler, DataSource dataSource) {
         this.customSuccessHandler = customSuccessHandler;
         this.dataSource = dataSource;
-        passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws  Exception{
         auth.jdbcAuthentication().dataSource(dataSource)
-                .passwordEncoder(passwordEncoder)
+                .passwordEncoder(getPasswordEncoder())
                 .usersByUsernameQuery("select login, password, 'true' from users" +
                         " join users_role on users.userId = users_role.userId where login =?")
                 .authoritiesByUsernameQuery("select login, roleName from users join users_role on users.userId = users_role.userId join role on  +\n" +

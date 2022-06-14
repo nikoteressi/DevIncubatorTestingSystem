@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,17 +57,18 @@ public class AdminUserController {
 
     @ResponseBody
     @GetMapping("/get-users")
-    private List<UserInfoDTO> getUsersList() {
+    public List<UserInfoDTO> getUsersList() {
         List<User> users = userService.getAllUsers();
         return users.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @ResponseBody
     @GetMapping("/get-user-by-id")
-    private UserInfoDTO getUserById(@RequestParam int userId) {
+    public UserInfoDTO getUserById(@RequestParam int userId) {
         User user = userService.getUserById(userId);
         return convertToDTO(user);
     }
+
     private UserInfoDTO convertToDTO(User user) {
         return modelMapper.map(user, UserInfoDTO.class);
     }

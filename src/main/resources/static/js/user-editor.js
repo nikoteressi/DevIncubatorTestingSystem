@@ -193,7 +193,7 @@ async function getUsersData() {
 
 async function fillEditUserForm(currentUserId) {
     let userInfo = usersData.find(({userId}) => {
-        return currentUserId === userId;
+        return currentUserId == userId;
     });
     console.log('Gotten user for edit/ ' + JSON.stringify(userInfo));
     getUserInfoEditFormHtml(currentUserId, userInfo.firstName, userInfo.lastName, userInfo.role, userInfo.login, userInfo.password);

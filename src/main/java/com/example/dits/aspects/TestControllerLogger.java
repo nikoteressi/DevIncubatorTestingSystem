@@ -1,4 +1,4 @@
-package com.example.dits.aop;
+package com.example.dits.aspects;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -16,9 +16,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+@SuppressWarnings("unchecked")
 @Aspect
 @Component
-public class LoggingAspect {
+public class TestControllerLogger {
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private Authentication auth;
 
@@ -29,7 +30,7 @@ public class LoggingAspect {
     }
 
     @After("execution(* com.example.dits.controllers.TestPageController.goTest(..))")
-    public void logGoTest(JoinPoint joinPoint) throws Throwable {
+    public void logGoTest(JoinPoint joinPoint) {
         getAuth();
         HttpSession session = getSession(joinPoint.getArgs());
         String testName = (String) session.getAttribute("testName");
@@ -38,7 +39,7 @@ public class LoggingAspect {
     }
 
     @After("execution(* com.example.dits.controllers.TestPageController.nextTestPage(..)))")
-    public void logNextTestPage(JoinPoint joinPoint) throws Throwable {
+    public void logNextTestPage(JoinPoint joinPoint) {
         Object[] arguments = getArgumentsFromIndicatedMethod(joinPoint);
         List<Integer> answeredQuestions = getAnsweredQuestions(arguments);
         ModelMap modelMap = getModelMap(arguments);

@@ -1,8 +1,6 @@
 package com.example.dits.controllers;
 
-import com.example.dits.entity.Topic;
 import com.example.dits.entity.User;
-import com.example.dits.service.TopicService;
 import com.example.dits.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -16,63 +14,56 @@ import org.springframework.web.bind.annotation.GetMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class SecurityController {
 
     private final UserService userService;
-    private final TopicService topicService;
 
-    @GetMapping("/user/chooseTest")
-    public String userPage(HttpSession session,ModelMap model) {
-        User user = userService.getUserByLogin(getPrincipal());
-        List<Topic> topicList = topicService.findAll();
-        List<Topic> topicsWithQuestions = new ArrayList<>();
-        for (Topic i:topicList){
-            if (i.getTestList().size() != 0){
-                topicsWithQuestions.add(i);
-            }
-        }
-          session.setAttribute("user", user);
-        model.addAttribute("title","Testing");
-        model.addAttribute("topicWithQuestions",topicsWithQuestions);
-        return "user/chooseTest";
+    @GetMapping("/login-handle")
+    public String loginHandle(HttpSession session) {
+        User user = userService.getUserByLogin(getUsername());
+        String authority = getAuthority();
+        session.setAttribute("user", user);
+        return authority.contains("USER") ? "redirect:/user/chooseTest" : "redirect:/admin/users-list";
     }
 
     @GetMapping("/login")
-    public String loginPage(ModelMap model){
-        model.addAttribute("title","Login");
-        return "login";}
+    public String loginPage(ModelMap model) {
+        model.addAttribute("title", "Login");
+        return "login";
+    }
 
     @GetMapping("/accessDenied")
-    public String accessDeniedGet(){
+    public String accessDeniedGet() {
         return "accessDenied";
     }
 
     @GetMapping("/logout")
-    public String logoutPage(HttpServletRequest request, HttpServletResponse response){
+    public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if(auth != null)
-            new SecurityContextLogoutHandler().logout(request,response,auth);
+        if (auth != null)
+            new SecurityContextLogoutHandler().logout(request, response, auth);
 
         return "redirect:/login?logout";
     }
 
-    private static String getPrincipal(){
-        String userName;
-        Object principal = SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
+    private static String getUsername() {
+        Object principal = getPrincipal();
 
-        if(principal instanceof UserDetails){
-            userName = ((UserDetails) principal).getUsername();
-        }
-        else
-            userName = principal.toString();
-        return userName;
+        return principal instanceof UserDetails ? ((UserDetails) principal).getUsername() : principal.toString();
+    }
+
+    private static String getAuthority() {
+        Object principal = getPrincipal();
+        return principal instanceof UserDetails ? String.valueOf(((UserDetails) principal).getAuthorities().stream().findFirst().orElse(null)) : principal.toString();
+    }
+
+    private static Object getPrincipal() {
+        return SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
     }
 
 }

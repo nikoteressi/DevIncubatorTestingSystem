@@ -3,6 +3,7 @@ package com.example.dits.controllers;
 import com.example.dits.dto.UserInfoDTO;
 import com.example.dits.entity.Role;
 import com.example.dits.entity.User;
+import com.example.dits.exceptions.NotFoundException;
 import com.example.dits.service.RoleService;
 import com.example.dits.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -64,8 +65,9 @@ public class AdminUserController {
 
     @ResponseBody
     @GetMapping("/get-user-by-id")
-    public UserInfoDTO getUserById(@RequestParam int userId) {
+    public UserInfoDTO getUserById(@RequestParam int userId) throws NotFoundException {
         User user = userService.getUserById(userId);
+        if (user == null) throw new NotFoundException("User with id: " + userId + " not found!");
         return convertToDTO(user);
     }
 

@@ -1,5 +1,6 @@
 package com.example.dits.dto;
 
+import com.example.dits.entity.Role;
 import lombok.*;
 
 @Data
@@ -11,7 +12,7 @@ public class UserInfoDTO {
     private String firstName;
     private String lastName;
     private String login;
-    private RoleDTO role;
+    private String role;
     private String password;
 
 }

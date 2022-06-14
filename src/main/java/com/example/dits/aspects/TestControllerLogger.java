@@ -26,7 +26,7 @@ public class TestControllerLogger {
     @Before("execution(* com.example.dits.controllers.TestPageController.*(..))")
     public void logAllMethods(JoinPoint joinPoint) {
         getAuth();
-        LOG.info("User: " + "\"" + auth.getName() + "\"" + " with authorities: " + auth.getAuthorities().stream().findFirst().orElse(null) + " called method: " + joinPoint.getSignature().getName() + " with args: " + Arrays.toString(joinPoint.getArgs()));
+        LOG.info("User: " + "\"" + auth.getName() + "\"" + " with authorities: " + "\"" + auth.getAuthorities().stream().findFirst().orElse(null) + "\"" + " called method: " + joinPoint.getSignature().getName() + " with args: " + Arrays.toString(joinPoint.getArgs()));
     }
 
     @After("execution(* com.example.dits.controllers.TestPageController.goTest(..))")

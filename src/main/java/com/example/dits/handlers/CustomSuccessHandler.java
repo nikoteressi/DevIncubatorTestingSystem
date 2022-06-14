@@ -49,14 +49,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     }
 
     private String determinateURL(List<String> roles) {
-        String url;
-        if (isUser(roles))
-            url = "/user/chooseTest";
-        else if(isAdmin(roles))
-            url = "/admin/testBuilder";
-        else
-            url = "/accessDenied";
-        return url;
+        return isUser(roles) || isAdmin(roles) ? "/login-handle" : "/accessDenied";
     }
 
     private void addAuthoritiesToRoles(Collection<? extends GrantedAuthority> authorities, List<String> roles) {

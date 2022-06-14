@@ -7,8 +7,6 @@ import com.example.dits.service.RoleService;
 import com.example.dits.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -26,20 +24,9 @@ public class AdminUserController {
     private final ModelMapper modelMapper;
 
     @GetMapping("/users-list")
-    public String getUsers(ModelMap model, HttpSession session) {
-        session.setAttribute("user", userService.getUserByLogin(getUsername()));
+    public String getUsers(ModelMap model) {
         model.addAttribute("title", "User editor");
         return "admin/user-editor";
-    }
-
-    private static String getUsername() {
-        Object principal = getPrincipal();
-        return principal instanceof UserDetails ? ((UserDetails) principal).getUsername() : principal.toString();
-    }
-
-    private static Object getPrincipal() {
-        return SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
     }
 
     @ResponseBody

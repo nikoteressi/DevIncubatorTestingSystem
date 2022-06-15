@@ -112,7 +112,7 @@ public class TestPageController {
 
         session.setAttribute("quantityOfRightAnswers", quantityOfRightAnswers);
         session.setAttribute("rightAnswerPercent", rightAnswerPercent);
-        return "redirect:/user/resultPage";
+        return "redirect:user/resultPage";
     }
 
     @GetMapping("/resultPage")
@@ -122,7 +122,7 @@ public class TestPageController {
         model.addAttribute("title", "Result");
         model.addAttribute("rightAnswersPercent", rightAnswerPercent);
         model.addAttribute("quantityOfRightAnswers", quantityOfRightAnswers);
-        return "/user/result-page";
+        return "user/result-page";
     }
 
     private void checkIfResultPage(List<Question> questions, int questionNumber, boolean isCorrect, User user, List<Statistic> statisticList) {

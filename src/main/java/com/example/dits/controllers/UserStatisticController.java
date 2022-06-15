@@ -23,6 +23,6 @@ public class UserStatisticController {
         List<TestStatisticByUser> testStatistic = statisticService.getListOfTestsWithStatisticsByUser((User) session.getAttribute("user"));
         model.addAttribute("title", "Personal Statistic");
         model.addAttribute("testStatisticsByUser", testStatistic);
-        return "/user/personal-statistic";
+        return "user/personal-statistic";
     }
 }

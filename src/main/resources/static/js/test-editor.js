@@ -89,7 +89,7 @@ addThemeForm.addEventListener('submit', async (event) => {
     console.log(newThemeValue);
     deactivateAddThemeForm();
     if (newThemeValue.length) {
-        const url = new URL(rootURL + "/admin/addTopic");
+        const url = new URL(baseUrl + "/admin/addTopic");
         console.log(newThemeValue);
         const params = {name: newThemeValue};
         url.search = new URLSearchParams(params).toString();
@@ -106,7 +106,7 @@ addThemeForm.addEventListener('submit', async (event) => {
 let result = null;
 
 async function getTestsData(themeId) {
-    const url = new URL(rootURL + "/admin/getTests");
+    const url = new URL(baseUrl + "/admin/getTests");
     const params = {id: themeId};
     url.search = new URLSearchParams(params).toString();
     const response = await fetch(url);
@@ -136,7 +136,7 @@ async function submitNewTheme(target) {
     const themeItem = target.closest('.theme__item');
     const themeId = themeItem.dataset.id;
     const {value: name} = themeItem.querySelector('.theme-item__input');
-    const url = new URL(rootURL + "/admin/editTopic");
+    const url = new URL(baseUrl + "/admin/editTopic");
     let params = {name, id: themeId};
     url.search = new URLSearchParams(params).toString();
     console.log(token);
@@ -154,7 +154,7 @@ async function submitNewTheme(target) {
 async function deleteTheme(target) {
     const themeItem = target.closest('.theme__item');
     const themeId = themeItem.dataset.id;
-    const url = new URL(rootURL + "/admin/removeTopic");
+    const url = new URL(baseUrl + "/admin/removeTopic");
     let params = {topicId: themeId};
     url.search = new URLSearchParams(params).toString();
     const response = await fetch(url, {
@@ -203,7 +203,7 @@ const newTestFormCloseButton = document.getElementById('newTestFormCloseButton')
 
 async function addNewTest(name, description) {
     newTestFormCloseButton.click();
-    const url = new URL(rootURL + "/admin/addTest");
+    const url = new URL(baseUrl + "/admin/addTest");
     let params = {name, description, topicId: currentThemeId};
     url.search = new URLSearchParams(params).toString();
     const response = await fetch(url, {
@@ -219,7 +219,7 @@ async function addNewTest(name, description) {
 
 async function editTest(name, description) {
     newTestFormCloseButton.click();
-    const url = new URL(rootURL + "/admin/editTest");
+    const url = new URL(baseUrl + "/admin/editTest");
     let params = {name, description, topicId: currentThemeId, testId: currentTestId};
     url.search = new URLSearchParams(params).toString();
     const response = await fetch(url, {
@@ -234,7 +234,7 @@ async function editTest(name, description) {
 }
 
 async function deleteTest() {
-    const url = new URL(rootURL + "/admin/removeTest");
+    const url = new URL(baseUrl + "/admin/removeTest");
     let params = {topicId: currentThemeId, testId: currentTestId};
     url.search = new URLSearchParams(params).toString();
     const response = await fetch(url, {
@@ -464,7 +464,7 @@ function openQuestionEditForm({questionId, description, answerDTOList}) {
 }
 
 async function getAnswers(questionId) {
-    const url = new URL(rootURL + "/admin/getAnswers");
+    const url = new URL(baseUrl + "/admin/getAnswers");
     const params = {id: questionId};
     url.search = new URLSearchParams(params).toString();
     response = await fetch(url);
@@ -535,7 +535,7 @@ function clickTestHandler(target) {
 }
 
 async function deleteQuestion() {
-    const url = new URL(rootURL + "/admin/removeQuestion");
+    const url = new URL(baseUrl + "/admin/removeQuestion");
     const params = {questionId: currentQuestionId, topicId: currentThemeId};
     url.search = new URLSearchParams(params).toString();
     let response = await fetch(url, {

@@ -41,4 +41,8 @@ public class Topic {
     @ToString.Exclude
     private List<Test> testList;
 
+    public Topic(int topicId, String name) {
+        this.topicId = topicId;
+        this.name = name;
+    }
 }

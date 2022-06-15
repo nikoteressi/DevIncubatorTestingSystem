@@ -31,6 +31,7 @@ const dataContainer = document.getElementById('dataContainer');
 const sortTestsButton = document.getElementById('sortTestsButton');
 const token = document.head.querySelector('meta[name="_csrf"]').getAttribute('content');
 let isReverseTest = false;
+const baseUrl = window.location.host;
 
 function updateResult(data) {
     if (!data) {
@@ -88,7 +89,7 @@ themeSelect.addEventListener('change', async ({target}) => {
     dataContainer.classList.remove('active');
     try {
         const themeId = target.value;
-        const url = new URL("http://localhost:8080/admin/getTestsStatistic");
+        const url = new URL(baseUrl + "/admin/getTestsStatistic");
         const params = {id: themeId};
         url.search = new URLSearchParams(params).toString();
         const response = await fetch(url);

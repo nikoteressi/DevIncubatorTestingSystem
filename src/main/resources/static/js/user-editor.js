@@ -10,6 +10,7 @@ const processModalContent = document.getElementById('processModalContent');
 const htmlOriginal = processModalContent.innerHTML;
 let usersData = null;
 let currentUserId = null;
+const baseUrl = window.location.host;
 
 
 window.onLoad = fillUsers();
@@ -185,7 +186,7 @@ async function fillUsers() {
 }
 
 async function getUsersData() {
-    const url = new URL("http://localhost:8080/admin/get-users");
+    const url = new URL(baseUrl + "/admin/get-users");
     const response = await fetch(url.toString());
     usersData = await response.json();
     return usersData;
@@ -202,7 +203,7 @@ async function fillEditUserForm(currentUserId) {
 async function addNewUser(firstName, lastName, role, login, password) {
     showProcessModal();
     newUserFormButton.click();
-    const url = new URL("http://localhost:8080/admin/add-user");
+    const url = new URL(baseUrl + "/admin/add-user");
     let userInfo = {firstName, lastName, role, login, password};
     const response = await fetch(url.toString(), {
         method: 'POST',
@@ -234,7 +235,7 @@ async function addNewUser(firstName, lastName, role, login, password) {
 async function editUser(userId, firstName, lastName, role, login, password) {
     showProcessModal();
     editUserFormButton.click();
-    const url = new URL("http://localhost:8080/admin/edit-user");
+    const url = new URL(baseUrl + "/admin/edit-user");
     let userInfo = {userId, firstName, lastName, role, login, password};
     const response = await fetch(url.toString(), {
         method: 'POST',
@@ -265,7 +266,7 @@ async function editUser(userId, firstName, lastName, role, login, password) {
 
 async function deleteUser(userId) {
     showProcessModal();
-    const url = new URL("http://localhost:8080/admin/remove-user");
+    const url = new URL(baseUrl + "/admin/remove-user");
     let params = {userId};
     url.search = new URLSearchParams(params).toString();
     const response = await fetch(url.toString(), {

@@ -38,7 +38,7 @@ const testDescription = document.getElementById("testDescription");
 const startTestButton = document.getElementById("startTestButton");
 const testSelect = document.getElementById("testSelect");
 
-const baseUrl = "http://localhost:8080";
+const baseUrl = window.location.host;
 
 let testsData = null;
 

@@ -74,7 +74,7 @@ function userDeleteClickHandler(target) {
     }
 }
 
-function getUserInfoHtml({userId, firstName, lastName, role, login, password}) {
+function getUserInfoHtml({userId, firstName, lastName, role, login}) {
     const userInfo = document.createElement('div');
     userInfo.className = 'user-info mb-5';
     userInfo.dataset.id = userId;
@@ -103,21 +103,18 @@ function getUserInfoHtml({userId, firstName, lastName, role, login, password}) {
               <div class="user-param">
                 <span>Login</span><input class="form-input mb-1 w-50" type="text" value="${login}" disabled="disabled"/>
               </div>
-              <div class="user-param">
-                <span>Password</span><input class="form-input mb-1 w-50" type="text" value="${password}" disabled="disabled"/>
-              </div>
             </div>
     </div>
   `
     return userInfo
 }
 
-function getUserInfoEditFormHtml(userId, firstName, lastName, role, login, password) {
+function getUserInfoEditFormHtml(userId, firstName, lastName, role, login) {
     document.getElementById('firstName').value = firstName;
     document.getElementById('lastName').value = lastName;
     document.getElementById('role').value = role;
     document.getElementById('login').value = login;
-    document.getElementById('password').value = password;
+    document.getElementById('password').value = "Change password";
 }
 
 function showProcessModal() {
@@ -189,6 +186,7 @@ async function getUsersData() {
     const url = new URL(baseUrl + "/admin/get-users");
     const response = await fetch(url.toString());
     usersData = await response.json();
+    usersData.sort();
     return usersData;
 }
 

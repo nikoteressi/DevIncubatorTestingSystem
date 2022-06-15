@@ -112,7 +112,7 @@ public class TestPageController {
 
         session.setAttribute("quantityOfRightAnswers", quantityOfRightAnswers);
         session.setAttribute("rightAnswerPercent", rightAnswerPercent);
-        return "redirect:user/resultPage";
+        return "redirect:/user/resultPage";
     }
 
     @GetMapping("/resultPage")

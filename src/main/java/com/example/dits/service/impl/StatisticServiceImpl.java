@@ -103,6 +103,7 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Transactional
+    @Override
     public List<TestStatistic> getListOfTestsWithStatisticsByTopic(int topicId) {
         Topic topic = topicService.getTopicByTopicId(topicId);
         return getTestStatistics(topic);

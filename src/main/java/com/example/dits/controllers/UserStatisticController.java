@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -21,6 +23,7 @@ public class UserStatisticController {
     @GetMapping("/personal-statistic")
     public String personalStatistic(ModelMap model, HttpSession session) {
         List<TestStatisticByUser> testStatistic = statisticService.getListOfTestsWithStatisticsByUser((User) session.getAttribute("user"));
+        testStatistic.sort(Comparator.naturalOrder());
         model.addAttribute("title", "Personal Statistic");
         model.addAttribute("testStatisticsByUser", testStatistic);
         return "user/personal-statistic";

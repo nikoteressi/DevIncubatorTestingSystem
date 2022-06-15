@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,9 @@ public class AdminStatisticController {
     @ResponseBody
     @GetMapping("/getTestsStatistic")
     public List<TestStatistic> getTestsStatistics(@RequestParam int id) {
-        return statisticService.getListOfTestsWithStatisticsByTopic(id);
+        List<TestStatistic> testStatistics = statisticService.getListOfTestsWithStatisticsByTopic(id);
+        testStatistics.sort(Comparator.naturalOrder());
+        return testStatistics;
     }
 
     @GetMapping("/user-statistic")
@@ -50,7 +53,9 @@ public class AdminStatisticController {
     @ResponseBody
     @GetMapping("/get-users-statistic")
     public List<TestStatisticByUser> getUsersStatistics(@RequestParam int userId) {
-        return statisticService.getListOfTestsWithStatisticsByUserId(userId);
+        List<TestStatisticByUser> statisticByUsers = statisticService.getListOfTestsWithStatisticsByUserId(userId);
+        statisticByUsers.sort(Comparator.naturalOrder());
+        return statisticByUsers;
     }
 
     @ResponseBody

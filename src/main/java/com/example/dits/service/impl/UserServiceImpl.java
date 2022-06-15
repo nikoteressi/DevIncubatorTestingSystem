@@ -35,10 +35,10 @@ public class UserServiceImpl implements UserService {
         if (!user.getPassword().equals("")) user.setPassword(passwordEncoder.encode(user.getPassword()));
         User userFromDb = repository.findById(id).orElse(null);
         assert userFromDb != null;
-        if (user.getFirstName().equals(userFromDb.getFirstName())) userFromDb.setFirstName(user.getFirstName());
-        if (user.getLastName().equals(userFromDb.getLastName())) userFromDb.setLastName(user.getLastName());
-        if (user.getRole().getRoleName().equals(userFromDb.getRole().getRoleName())) userFromDb.setRole(user.getRole());
-        if (user.getLogin().equals(userFromDb.getLogin())) userFromDb.setLogin(user.getLogin());
+        if (!user.getFirstName().equals(userFromDb.getFirstName())) userFromDb.setFirstName(user.getFirstName());
+        if (!user.getLastName().equals(userFromDb.getLastName())) userFromDb.setLastName(user.getLastName());
+        if (!user.getRole().getRoleName().equals(userFromDb.getRole().getRoleName())) userFromDb.setRole(user.getRole());
+        if (!user.getLogin().equals(userFromDb.getLogin())) userFromDb.setLogin(user.getLogin());
         userFromDb.setPassword(!user.getPassword().equals("") ? passwordEncoder.encode(user.getPassword()) : userFromDb.getPassword());
         repository.save(userFromDb);
     }

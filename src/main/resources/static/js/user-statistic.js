@@ -23,7 +23,7 @@ const resultTableBody = document.getElementById('resultTableBody');
 const dataContainer = document.getElementById('dataContainer');
 const sortTestsButton = document.getElementById('sortTestsButton');
 let isReverseTest = false;
-const baseUrl = "http:localhost:8080";
+const baseUrl = window.location.origin;
 
 function updateResult(data) {
     if (!data) {

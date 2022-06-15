@@ -10,7 +10,7 @@ const processModalContent = document.getElementById('processModalContent');
 const htmlOriginal = processModalContent.innerHTML;
 let usersData = null;
 let currentUserId = null;
-const baseUrl = window.location.host;
+const baseUrl = window.location.origin;
 
 
 window.onLoad = fillUsers();

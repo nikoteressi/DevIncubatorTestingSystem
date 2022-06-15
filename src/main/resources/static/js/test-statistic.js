@@ -31,7 +31,7 @@ const dataContainer = document.getElementById('dataContainer');
 const sortTestsButton = document.getElementById('sortTestsButton');
 const token = document.head.querySelector('meta[name="_csrf"]').getAttribute('content');
 let isReverseTest = false;
-const baseUrl = window.location.host;
+const baseUrl = window.location.origin;
 
 function updateResult(data) {
     if (!data) {

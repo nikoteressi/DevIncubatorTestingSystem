@@ -38,7 +38,7 @@ const testDescription = document.getElementById("testDescription");
 const startTestButton = document.getElementById("startTestButton");
 const testSelect = document.getElementById("testSelect");
 
-const baseUrl = window.location.host;
+const baseUrl = window.location.origin;
 
 let testsData = null;
 

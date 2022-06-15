@@ -65,7 +65,7 @@ let prevEditedTheme = null;
 let prevEditedThemeValue = null;
 let currentThemeId = null;
 let dataByTopicId = null;
-const rootURL = window.location.host;
+const baseUrl = window.location.origin;
 
 function changeActiveAddThemeFormStatus() {
     addThemeForm.classList.toggle('active');

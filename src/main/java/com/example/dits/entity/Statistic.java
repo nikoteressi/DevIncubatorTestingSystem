@@ -9,7 +9,6 @@ import java.util.Date;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity
 @Builder
 public class Statistic {
@@ -25,13 +24,12 @@ public class Statistic {
     @Column
     private boolean correct;
 
-
     @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinColumn(name ="questionId")
+    @JoinColumn(name = "questionId")
     private Question question;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinColumn(name ="userId")
+    @JoinColumn(name = "userId")
     private User user;
 
     public Statistic(Date date, boolean correct, Question question, User user) {
@@ -39,5 +37,13 @@ public class Statistic {
         this.correct = correct;
         this.question = question;
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "statisticId = " + statisticId + ", " +
+                "date = " + date + ", " +
+                "correct = " + correct + ")";
     }
 }

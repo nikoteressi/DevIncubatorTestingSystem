@@ -138,9 +138,10 @@ public class StatisticServiceImpl implements StatisticService {
 
     private List<TestStatisticByUser> getTestStatisticsByUser(List<List<Statistic>> listStatisticsByTestName) {
         List<TestStatisticByUser> testStatisticByUsers = new ArrayList<>();
-
+        int answersQuantity;
         for (List<Statistic> s : listStatisticsByTestName) {
-            testStatisticByUsers.add(new TestStatisticByUser(getFullNameOfTopicAndTest(s), s.size(), calculateAvg(s.size(), getAmountOfRightAnswer(s))));
+            answersQuantity = (int) s.stream().map(Statistic::getQuestion).distinct().count();
+            testStatisticByUsers.add(new TestStatisticByUser(getFullNameOfTopicAndTest(s), s.size() / answersQuantity, calculateAvg(s.size(), getAmountOfRightAnswer(s))));
         }
         return testStatisticByUsers;
     }

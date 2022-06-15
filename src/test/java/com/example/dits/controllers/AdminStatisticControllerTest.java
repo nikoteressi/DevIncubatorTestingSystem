@@ -1,9 +1,8 @@
 package com.example.dits.controllers;
 
-import com.example.dits.service.StatisticService;
-import com.example.dits.service.TestService;
-import com.example.dits.service.TopicService;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.dits.DAO.StatisticRepository;
+import com.example.dits.DAO.TestRepository;
+import com.example.dits.DAO.TopicRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,13 +11,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.util.NestedServletException;
 
+
+import java.util.ArrayList;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -32,44 +28,61 @@ public class AdminStatisticControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void getAdminStatistic() throws Exception {
+    public void shouldReturnStatusAccessDeniedWhenIsNotAdmin() throws Exception {
+        mockMvc.perform(get("/admin/user-statistic")
+                        .with(user("user").roles("USER")))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void shouldReturnStatusOkAndListWithTopics() throws Exception {
         mockMvc.perform(get("/admin/adminStatistic"))
+                .andDo(print())
+                .andExpect(model().attributeExists("topicList"))
+                .andExpect(model().attribute("topicList", new ArrayList<>()))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void getUserStatistic() throws Exception {
+    public void shouldReturnStatusOkAndListWithUsersWhenAdmin() throws Exception {
         mockMvc.perform(get("/admin/user-statistic"))
+                .andDo(print())
+                .andExpect(model().attributeExists("usersList"))
+                .andExpect(model().attribute("usersList", new ArrayList<>()))
                 .andExpect(status().isOk());
     }
 
     @Test()
-    public void getTestStatisticByTopicId() throws Exception {
-        mockMvc.perform(get("/admin/getTestsStatistic")
-                        .param("id", String.valueOf(anyInt())))
+    public void shouldReturnListWithTestStatisticsIfTopicExists() throws Exception {
+        mockMvc.perform(get("/admin/getTestsStatistic?id=1"))
                 .andDo(print())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void getUserStatisticsById() throws Exception {
+    public void shouldReturnUsersAndStatusOk() throws Exception {
         mockMvc.perform(get("/admin/get-users-statistic")
                         .param("userId", String.valueOf(anyInt())))
+                .andDo(print())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void removeStatisticById() throws Exception {
+    public void shouldReturnSuccessAfterRemovingStatistic() throws Exception {
         mockMvc.perform(get("/admin/adminStatistic/removeStatistic/byId")
                         .param("id", String.valueOf(anyInt())))
+                .andDo(print())
+                .andExpect(content().string("success"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void removeAllStatistics() throws Exception {
+    public void shouldReturnRedirectAfterRemoveAllStatistics() throws Exception {
         mockMvc.perform(get("/admin/adminStatistic/removeStatistic/all"))
-                .andExpect(redirectedUrl("/admin/adminStatistic"));
+                .andDo(print())
+                .andExpect(status().is3xxRedirection());
     }
 
 }

@@ -25,7 +25,7 @@ deleteConfirmationModal.addEventListener('click', ({target}) => {
     if (target.closest('.confirmation-modal')) {
         userDeleteClickHandler(target);
     }
-})
+});
 
 createNewUserForm.addEventListener('submit', (event) => {
     event.preventDefault();

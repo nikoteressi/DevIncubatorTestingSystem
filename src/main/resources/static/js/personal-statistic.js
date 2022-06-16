@@ -1,5 +1,6 @@
 const resultTableBody = document.getElementById('resultTableBody');
 const dataContainer = document.getElementById('dataContainer');
+const burgerMenu = document.querySelector('.burger');
 let currentUserId = null;
 let isReverseTest = false;
 const baseUrl = window.location.origin;
@@ -9,6 +10,13 @@ window.onload = getUserStatistic();
 function setCurrentUserid() {
     currentUserId = document.querySelector(".grid__head").id;
 }
+
+burgerMenu.addEventListener('click', ({target}) => {
+    if (target.closest('.burger')) {
+        document.getElementById('navbarNavAltMarkup').classList.toggle('collapse');
+        document.getElementById('navbarNavAltMarkup').classList.toggle('show');
+    }
+});
 
 function updateResult(data) {
     if (!data) {

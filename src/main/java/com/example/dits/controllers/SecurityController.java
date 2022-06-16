@@ -3,6 +3,7 @@ package com.example.dits.controllers;
 import com.example.dits.entity.User;
 import com.example.dits.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +22,13 @@ public class SecurityController {
 
     private final UserService userService;
 
+    @GetMapping("/")
+    public String redirecting() {
+        String url = "";
+        String authority = getAuthority();
+        if (isAuthenticated()) return authority.contains("USER") ? "redirect:/user/chooseTest" : "redirect:/admin/users-list";
+        return url;
+    }
     @GetMapping("/login-handle")
     public String loginHandle(HttpSession session) {
         User user = userService.getUserByLogin(getUsername());
@@ -64,6 +72,15 @@ public class SecurityController {
     private static Object getPrincipal() {
         return SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
+    }
+
+    private boolean isAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || AnonymousAuthenticationToken.class.
+                isAssignableFrom(authentication.getClass())) {
+            return false;
+        }
+        return authentication.isAuthenticated();
     }
 
 }

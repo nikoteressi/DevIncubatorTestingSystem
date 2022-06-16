@@ -1,23 +1,3 @@
-let data = [
-    {
-        "testName": "Second test",
-        "count": 19,
-        "avgProc": 80,
-        "questionStatistics": [
-            {"count": 3, "avgProc": 100},
-            {"count": 10, "avgProc": 90},
-            {"count": 10, "avgProc": 60},
-            {"count": 10, "avgProc": 70},
-            {"count": 19, "avgProc": 84}
-        ]
-    },
-    {
-        "testName": "TherdNameTest",
-        "count": 0,
-        "avgProc": 0,
-        "questionStatistics": []
-    }]
-
 const themeSelect = document.getElementById('themeSelect');
 const resultTableBody = document.getElementById('resultTableBody');
 const dataContainer = document.getElementById('dataContainer');
@@ -60,11 +40,11 @@ function updateResult(data) {
 themeSelect.addEventListener('change', async ({target}) => {
     dataContainer.classList.remove('active');
     try {
-        const userId = target.value;
+        const id = target.value;
         const url = new URL(baseUrl + "/admin/get-users-statistic");
-        const params = {id: userId};
+        const params = {userId: id};
         url.search = new URLSearchParams(params).toString();
-        const response = await fetch(url);
+        const response = await fetch(url.toString());
         const result = await response.json();
         updateResult(result);
     } catch (err) {
@@ -75,10 +55,14 @@ themeSelect.addEventListener('change', async ({target}) => {
 function reverseTests(target) {
     target.closest('#sortTestsButton').classList.toggle('reverse');
     const reversedTests = Array.from(resultTableBody.querySelectorAll('.test')).reverse();
+    let index = 0;
     resultTableBody.innerHTML = '';
     reversedTests.forEach(test => {
+        index = ++index;
+        test.childNodes.item(1).childNodes.item(1).textContent = index;
         resultTableBody.append(test);
-    })
+    });
+    index = 0;
 }
 
 

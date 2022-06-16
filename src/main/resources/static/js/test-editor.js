@@ -73,7 +73,7 @@ function changeActiveAddThemeFormStatus() {
 }
 
 function addThemeClickHandler(target) {
-    if (target.closest('.sidebar-add-theme__button')) {
+    if (target.closest('.sidebar-add-theme__buttobutton')) {
         changeActiveAddThemeFormStatus();
     }
 }

@@ -12,7 +12,7 @@
                     <div class="d-flex gy-2 justify-content-between flex-wrap">
                         <select class="col-md-5 col-12 theme-select" name="theme" id="themeSelect">
                             <option value="" selected disabled>Student name</option>
-                            <option th:each="user : ${userListStat}" th:value="${user.userId}"
+                            <option th:each="user : ${usersList}" th:value="${user.userId}"
                                     th:text="${user.firstName}+ ' ' + ${user.lastName}">Sashko
                             </option>
                         </select>
@@ -46,6 +46,4 @@
 <div th:replace="fragments/footer"></div>
 <div th:replace="fragments/modals"></div>
 
-<script src="../../static/js/user-statistic.js" th:src="@{/js/user-statistic.js}"></script>
-</body>
-</html>
+<script src="../../static/js/user-statistic.js" th:src="@{/js/user-statistic.js}"></script></body>

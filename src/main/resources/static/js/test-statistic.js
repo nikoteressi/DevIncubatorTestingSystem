@@ -1,34 +1,6 @@
-/**
- * TODO:
- * - Add classes
- * - rename this file
- * 
- */
-
-let data = [
-    {
-        "testName": "Second test",
-        "count": 19,
-        "avgProc": 80,
-        "questionStatistics": [
-            {"count": 3, "avgProc": 100},
-            {"count": 10, "avgProc": 90},
-            {"count": 10, "avgProc": 60},
-            {"count": 10, "avgProc": 70},
-            {"count": 19, "avgProc": 84}
-        ]
-    },
-    {
-        "testName": "TherdNameTest",
-        "count": 0,
-        "avgProc": 0,
-        "questionStatistics": []
-    }]
-
 const themeSelect = document.getElementById('themeSelect');
 const resultTableBody = document.getElementById('resultTableBody');
 const dataContainer = document.getElementById('dataContainer');
-const sortTestsButton = document.getElementById('sortTestsButton');
 const token = document.head.querySelector('meta[name="_csrf"]').getAttribute('content');
 let isReverseTest = false;
 const baseUrl = window.location.origin;

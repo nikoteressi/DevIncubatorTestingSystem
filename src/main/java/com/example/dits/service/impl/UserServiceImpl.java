@@ -2,6 +2,7 @@ package com.example.dits.service.impl;
 
 import com.example.dits.DAO.UserRepository;
 import com.example.dits.entity.User;
+import com.example.dits.exceptions.CanNotAddUserException;
 import com.example.dits.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,12 +33,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void update(User user, int id) {
-        if (!user.getPassword().equals("")) user.setPassword(passwordEncoder.encode(user.getPassword()));
         User userFromDb = repository.findById(id).orElse(null);
         assert userFromDb != null;
         if (!user.getFirstName().equals(userFromDb.getFirstName())) userFromDb.setFirstName(user.getFirstName());
         if (!user.getLastName().equals(userFromDb.getLastName())) userFromDb.setLastName(user.getLastName());
-        if (!user.getRole().getRoleName().equals(userFromDb.getRole().getRoleName())) userFromDb.setRole(user.getRole());
+        if (!user.getRole().getRoleName().equals(userFromDb.getRole().getRoleName()))
+            userFromDb.setRole(user.getRole());
         if (!user.getLogin().equals(userFromDb.getLogin())) userFromDb.setLogin(user.getLogin());
         userFromDb.setPassword(!user.getPassword().equals("") ? passwordEncoder.encode(user.getPassword()) : userFromDb.getPassword());
         repository.save(userFromDb);
@@ -45,8 +46,15 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void save(User user) {
+    public void save(User user) throws CanNotAddUserException {
+        if (user.getFirstName().isEmpty()
+                || user.getLastName().isEmpty()
+                || user.getLogin().isEmpty()
+                || user.getRole() == null
+                || user.getPassword().isEmpty())
+            throw new CanNotAddUserException("Can't create user with null fields. New user info: " + user);
 
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         repository.save(user);
     }
 

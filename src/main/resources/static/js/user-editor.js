@@ -47,6 +47,7 @@ editUserForm.addEventListener('submit', (event) => {
     const role = formData.get('role');
     const login = formData.get('login');
     const password = formData.get('password');
+    console.log(password);
     editUser(currentUserId, firstName, lastName, role, login, password).then();
     createNewUserForm.reset();
 });
@@ -114,7 +115,7 @@ function getUserInfoEditFormHtml(userId, firstName, lastName, role, login) {
     document.getElementById('lastName').value = lastName;
     document.getElementById('role').value = role;
     document.getElementById('login').value = login;
-    document.getElementById('password').value = "Change password";
+    document.getElementsByName('password').item(0).value = "";
 }
 
 function showProcessModal() {

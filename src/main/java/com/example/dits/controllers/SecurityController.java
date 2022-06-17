@@ -22,13 +22,13 @@ public class SecurityController {
 
     private final UserService userService;
 
-    @GetMapping("/")
-    public String redirecting() {
-        String url = "";
-        String authority = getAuthority();
-        if (isAuthenticated()) return authority.contains("USER") ? "redirect:/user/chooseTest" : "redirect:/admin/users-list";
-        return url;
-    }
+//    @GetMapping("/")
+//    public String redirecting() {
+//        String url = "";
+//        String authority = getAuthority();
+//        if (isAuthenticated()) return authority.contains("USER") ? "redirect:/user/chooseTest" : "redirect:/admin/users-list";
+//        return url;
+//    }
     @GetMapping("/login-handle")
     public String loginHandle(HttpSession session) {
         User user = userService.getUserByLogin(getUsername());

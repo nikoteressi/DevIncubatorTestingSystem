@@ -1,5 +1,6 @@
 package com.example.dits.configurators;
 
+import com.example.dits.filters.AuthentificatedUserRedirectFilter;
 import com.example.dits.handlers.CustomSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.sql.DataSource;
 
@@ -45,11 +47,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http.addFilterAt(new AuthentificatedUserRedirectFilter(), UsernamePasswordAuthenticationFilter.class)
+                .authorizeRequests()
                 .antMatchers("/", "/login").permitAll()
                 .antMatchers("/", "/user/**").hasRole("USER")
                 .antMatchers("/", "/admin/**").hasRole("ADMIN")
-                .antMatchers("/").authenticated()
 
                 .and().formLogin().loginPage("/login")
                 .successHandler(customSuccessHandler)

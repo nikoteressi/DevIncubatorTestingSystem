@@ -3,6 +3,7 @@ package com.example.dits.controllers;
 import com.example.dits.dto.UserInfoDTO;
 import com.example.dits.entity.Role;
 import com.example.dits.entity.User;
+import com.example.dits.exceptions.CanNotAddUserException;
 import com.example.dits.exceptions.NotFoundException;
 import com.example.dits.service.RoleService;
 import com.example.dits.service.UserService;
@@ -38,7 +39,7 @@ public class AdminUserController {
 
     @ResponseBody
     @PostMapping("/add-user")
-    public List<UserInfoDTO> adduser(@RequestBody UserInfoDTO userInfo) {
+    public List<UserInfoDTO> adduser(@RequestBody UserInfoDTO userInfo) throws CanNotAddUserException {
         User user = modelMapper.map(userInfo, User.class);
         Role role = roleService.getRoleByRoleName(userInfo.getRole());
         user.setRole(role);

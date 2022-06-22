@@ -21,7 +21,7 @@ import java.util.List;
 
 @Aspect
 @Component
-@Profile("!Test")
+@Profile("!test")
 public class AdministrationLogger {
     private final Logger LOG;
     private Authentication auth;

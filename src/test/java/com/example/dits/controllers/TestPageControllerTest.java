@@ -43,8 +43,6 @@ public class TestPageControllerTest {
     @MockBean
     UserRepository userRepository;
 
-    private final MockHttpSession session = new MockHttpSession();
-
     @Test
     public void shouldReturnListWithAnswersAndQuestionInModelAndStatusOk() throws Exception {
         List<Question> questionList = new ArrayList<>();
@@ -61,15 +59,4 @@ public class TestPageControllerTest {
                 .andExpect(model().attribute("title", "Testing"))
                 .andExpect(status().isOk());
     }
-
-//    @Test
-//    public void shouldReturnModelWithAttributesAndStatusOk() throws Exception {
-//        mockMvc.perform(get("/user/resultPage"))
-//                .andDo(print())
-//                .andExpect(content().contentType("text/html;charset=UTF-8"))
-//                .andExpect(model().attribute("title", "Result"))
-//                .andExpect(model().attribute("rightAnswersPercent", anyInt()))
-//                .andExpect(model().attribute("quantityOfRightAnswers", anyInt()))
-//                .andExpect(status().isOk());
-//    }
 }

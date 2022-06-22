@@ -1,1 +1,0 @@
-web: java -jar target/dits_for_dev_inc-1.0.jar

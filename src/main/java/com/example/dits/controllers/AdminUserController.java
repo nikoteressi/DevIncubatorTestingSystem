@@ -26,20 +26,9 @@ public class AdminUserController {
     private final ModelMapper modelMapper;
 
     @GetMapping("/users-list")
-    public String getUsers(ModelMap model, HttpSession session) {
-        session.setAttribute("user", userService.getUserByLogin(getUsername()));
+    public String getUsers(ModelMap model) {
         model.addAttribute("title", "User editor");
         return "admin/user-editor";
-    }
-
-    private static String getUsername() {
-        Object principal = getPrincipal();
-        return principal instanceof UserDetails ? ((UserDetails) principal).getUsername() : principal.toString();
-    }
-
-    private static Object getPrincipal() {
-        return SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
     }
 
     @ResponseBody
@@ -53,7 +42,7 @@ public class AdminUserController {
     @PostMapping("/add-user")
     public List<UserInfoDTO> adduser(@RequestBody UserInfoDTO userInfo) {
         User user = modelMapper.map(userInfo, User.class);
-        Role role = roleService.getRoleByRoleName(userInfo.getRole().getCurrentRole());
+        Role role = roleService.getRoleByRoleName(userInfo.getRole());
         user.setRole(role);
         userService.save(user);
         return getUsersList();
@@ -63,7 +52,7 @@ public class AdminUserController {
     public String editUser(@RequestBody UserInfoDTO userInfo) {
         User user = modelMapper.map(userInfo, User.class);
         int userId = userInfo.getUserId();
-        Role role = roleService.getRoleByRoleName(userInfo.getRole().getCurrentRole());
+        Role role = roleService.getRoleByRoleName(userInfo.getRole());
         user.setRole(role);
         userService.update(user, userId);
         return "redirect:/admin/get-users";

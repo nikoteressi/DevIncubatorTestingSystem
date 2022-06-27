@@ -27,11 +27,16 @@ public class AdminStatisticController {
 
     @GetMapping("/adminStatistic")
     public String testStatistic(ModelMap model){
-
         List<TopicDTO> topicDTOList = topicService.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
         model.addAttribute("topicList",topicDTOList);
         model.addAttribute("title","Statistic");
         return "admin/test-statistic";
+    }
+
+    @ResponseBody
+    @GetMapping("/getTestsStatistic")
+    public List<TestStatistic> getTestsStatistics(@RequestParam int id) {
+        return statisticService.getListOfTestsWithStatisticsByTopic(id);
     }
 
     @GetMapping("/user-statistic")
@@ -47,6 +52,7 @@ public class AdminStatisticController {
     public List<TestStatisticByUser> getUsersStatistics(@RequestParam int userId) {
         return statisticService.getListOfTestsWithStatisticsByUserId(userId);
     }
+
     @ResponseBody
     @GetMapping("/adminStatistic/removeStatistic/byId")
     public String removeStatisticByUserId(@RequestParam int id){

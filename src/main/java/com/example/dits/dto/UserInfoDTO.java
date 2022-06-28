@@ -1,5 +1,6 @@
 package com.example.dits.dto;
 
+import com.example.dits.entity.Role;
 import lombok.*;
 
 @Data

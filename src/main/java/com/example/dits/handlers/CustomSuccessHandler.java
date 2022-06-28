@@ -51,7 +51,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private String determinateURL(List<String> roles) {
         String url;
         if (isUser(roles))
-            url = "/user/chooseTest";
+            url = "/login-handle";
         else if(isAdmin(roles))
             url = "/admin/users-list";
         else

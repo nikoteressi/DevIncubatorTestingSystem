@@ -3,17 +3,15 @@ package com.example.dits.controllers;
 import com.example.dits.dto.UserInfoDTO;
 import com.example.dits.entity.Role;
 import com.example.dits.entity.User;
+import com.example.dits.exceptions.NotFoundException;
 import com.example.dits.service.RoleService;
 import com.example.dits.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,17 +58,19 @@ public class AdminUserController {
 
     @ResponseBody
     @GetMapping("/get-users")
-    private List<UserInfoDTO> getUsersList() {
+    public List<UserInfoDTO> getUsersList() {
         List<User> users = userService.getAllUsers();
         return users.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @ResponseBody
     @GetMapping("/get-user-by-id")
-    private UserInfoDTO getUserById(@RequestParam int userId) {
+    public UserInfoDTO getUserById(@RequestParam int userId) throws NotFoundException {
         User user = userService.getUserById(userId);
+        if (user == null) throw new NotFoundException("User with id: " + userId + " not found!");
         return convertToDTO(user);
     }
+
     private UserInfoDTO convertToDTO(User user) {
         return modelMapper.map(user, UserInfoDTO.class);
     }

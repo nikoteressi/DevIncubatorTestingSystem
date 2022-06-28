@@ -26,6 +26,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     @Autowired
     public SecurityConfiguration(CustomSuccessHandler customSuccessHandler, DataSource dataSource) {
         this.customSuccessHandler = customSuccessHandler;
